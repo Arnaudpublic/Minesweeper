@@ -1,0 +1,84 @@
+html {
+	background-color: rgb(0,0,0,0.8);
+	font-family: Verdana;
+}
+
+body {
+	background-image: url('https://cdn.discordapp.com/attachments/587307618155102257/747396349393109024/53766.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.whole_page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: rgb(0,0,0,0.5);
+	height: 100%;
+	color: white;
+}
+
+.grid_container {
+	align-items: center;
+	width: 100%;
+}
+
+.grid {
+	width: 80%;
+	margin: 0 10%;
+}
+
+td {
+    height: 50px;
+}
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  }
+
+.box {
+	border: 1px white solid;
+	text-align: center;
+	background-color: rgb(0,0,0,0.7);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	font-size: 25px;
+}
+
+.miscellany {
+	background-color: rgb(0,0,0,0.7);
+	width: 78%;
+	padding: 1%;
+	margin-top: 1%;
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+}
+
+.settings {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.actions {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+button {
+	height: 50px;
+	width: 100px;
+}
+
+.credits {
+  width: 100%;
+  background-color: rgb(0,0,0,0.9);
+  text-align: center;
+  padding: 20px 0;
+  padding-top: 40px;
+  margin-top: 15px;
+}

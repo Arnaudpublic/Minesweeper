@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Minesweeper</title>
+	<script src="Minesweeper.js"></script>
+	<link rel="stylesheet" type="text/css" href="Minesweeper.css">
+	<link rel="icon" href="https://cdn.discordapp.com/attachments/587307618155102257/746720942180270143/Icon_bomber_filled.png">
+</head>
+<body onload="loading()">
+	<div class="whole_page">
+		<h2>Let's play Minesweeper!</h2>
+		<div class="grid_container">
+			<table class="grid"></table>
+		</div>
+		<div class="miscellany">
+			<div class="actions">
+				<h3>Game actions</h3>
+				<button onclick="flag_status()">Placing a flag</button>
+				<button onclick="verify_win()">Verify win</button>
+				<button onclick="grid_reset()">Start over</button>
+				<p class="amount_of_flags">Amount of flags: unknown</p>
+				<p class="placing_flag">You are currently not placing a flag</p>
+			</div>
+			<div class="settings">
+				<div class="actions">
+					<h3>Grid size</h3>
+					<p>The amount of bombs is calculated depending on the grid size.</p>
+					<button onclick="size(10,15)">Small</button>
+					<button onclick="size(20,30)">Medium</button>
+					<button onclick="size(40,60)">Large</button>
+					<p class="selected_size">Selected size: 20x30</p>
+				</div>
+				<div class="actions">
+					<h3>Difficulty</h3>
+					<p>Recommended and default difficulty is medium.</p>
+					<button onclick="difficulty(1,'Easy')">Easy</button>
+					<button onclick="difficulty(2,'Medium')">Medium</button>
+					<button onclick="difficulty(3,'Difficult')">Difficult</button>
+					<p class="selected_difficulty">Selected difficulty: Medium</p>
+				</div>
+			</div>
+		</div>
+		<div class="credits">
+				<p>
+				Website done and maintained by Arnaud#0865, contact via discord for any feedback <br><br>
+				Credits to the original Minesweeper game
+				</p>
+		</div>
+	</div>
+</body>
+</html>
