@@ -271,6 +271,14 @@ function verify_win() {
 }
 
 function end_game(win_or_loss) {
+	for (var row_number = 0; row_number < grid_shown.length; row_number++) {
+		for (var box_number = 0; box_number < grid_shown.length; box_number++) {
+			if (grid_hidden[row_number][box_number]=="bomb") {
+				box_selected = grid_html.getElementsByClassName("rows")[row_number].getElementsByClassName("box")[box_number]
+				box_selected.style.backgroundImage = "url('http://bit.ly/bomb_png')"
+			}
+		}
+	}
 	game_over = true
 	game_win = win_or_loss
 	alert('The game is over, you can start a new one by pressing on "start over"')
