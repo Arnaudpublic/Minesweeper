@@ -10,18 +10,23 @@
 	<div class="whole_page">
 		<h2>Let's play Minesweeper!</h2>
 		<div class="grid_container">
+			<div class="timer">Game didn't start yet, click on a box to play.</div>
 			<table class="grid"></table>
 		</div>
 		<div class="miscellany">
-			<div class="actions">
-				<h3>Game actions</h3>
-				<button onclick="flag_status()">Placing a flag</button>
-				<button onclick="verify_win()">Verify win</button>
-				<button onclick="grid_reset()">Start over</button>
-				<p class="amount_of_flags">Amount of flags: unknown</p>
-				<p class="placing_flag">You are currently not placing a flag</p>
+			<div class="howtoplay">
+				<h1>How to play</h1>
+				<p>The number in the box is the amount of bombs next to it. Place a flag on all bomb spots to win. Right click / click "Placing a flag" to add a flag.</p>	
 			</div>
 			<div class="settings">
+				<div class="actions">
+					<h3>Game actions</h3>
+					<button onclick="flag_status()">Placing a flag</button>
+					<button onclick="verify_win()">Verify win</button>
+					<button onclick="grid_reset()">Start over</button>
+					<p class="amount_of_flags">Amount of flags: unknown</p>
+					<p class="placing_flag">You are currently not placing a flag</p>
+				</div>
 				<div class="actions">
 					<h3>Grid size</h3>
 					<p>The amount of bombs is calculated depending on the grid size.</p>
@@ -40,6 +45,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="credits">
 				<p>
 				Website done and maintained by Arnaud#0865, contact via discord for any feedback <br><br>
