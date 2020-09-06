@@ -29,6 +29,7 @@ function difficulty(multiplier,text_to_display) {
 
 function grid_reset() {
 	game_over = false;
+	grid_generated = false;
 	grid_html = document.getElementsByClassName("grid")[0]
 	for (var i = grid_html.getElementsByClassName("rows").length - 1; i >= 0; i--) {
 		remove_row = grid_html.getElementsByClassName("rows")[i]
@@ -49,14 +50,15 @@ function grid_reset() {
 			new_box.className = "box"
 			new_box.Name = j
 			new_box.addEventListener("click", play)
+			new_box.addEventListener("contextmenu", right_click)
 		}
 		grid_html.appendChild(new_row);
 	}
-	grid_generation()
 }
 
-function grid_generation() {
+function grid_generation(start_row,start_box) {
 	// bomb generation
+	grid_generated = true
 	amount_of_bombs = bomb_multipler*Math.floor(Math.sqrt(number_of_rows))*Math.floor(Math.sqrt(number_of_boxes));
 	amount_of_flags = amount_of_bombs;
 	placing_flag = false;
@@ -64,7 +66,7 @@ function grid_generation() {
 	for (var i = 0; i < amount_of_bombs; i++) {
 		box_number = Math.floor(Math.random()*grid_shown.length)
 		row_number = Math.floor(Math.random()*grid_shown.length)
-		while (grid_hidden[row_number][box_number]!=undefined) {
+		while ((grid_hidden[row_number][box_number]!=undefined)&&((row_number!=start_row)||(box_number!=start_box))) {
 			box_number = Math.floor(Math.random()*grid_shown.length)
 			row_number = Math.floor(Math.random()*grid_shown.length)
 		}
@@ -111,6 +113,7 @@ function grid_generation() {
 			//grid_html.getElementsByClassName("rows")[row_number].getElementsByClassName("box")[box_number].innerText = grid_hidden[row_number][box_number] // that's for output not for normal games
 		}
 	}
+	updateTimer()
 }
 
 function flag_status() {
@@ -121,6 +124,31 @@ function flag_status() {
 		placing_flag = true
 		document.getElementsByClassName('placing_flag')[0].innerText = "You are currently placing a flag"
 	}
+}
+
+var seconds = 0, minutes = 0;
+function updateTimer() {
+    seconds ++
+     setTimeout(updateTimer, 1000)
+     if (seconds==60) {
+     	seconds=0
+     	minutes+=1
+     }
+     if ((minutes==59)&&(seconds==59)) {
+     	stop_timer = true
+     }
+     if (seconds<10) {
+    	document.getElementsByClassName('timer')[0].innerText = "Timer: " + minutes + ":0" + seconds
+     } else {
+    	document.getElementsByClassName('timer')[0].innerText = "Timer: " + minutes + ":" + seconds
+    }
+}
+
+function right_click(e) {
+	placing_flag = true
+	temp_flag = true
+	e.preventDefault()
+	play(e)
 }
 
 function play(e) {
@@ -136,16 +164,23 @@ function play(e) {
 	box_number = box_selected.Name
 	row_number = box_selected.parentElement.Name
 	//console.log(grid_hidden[row_number][box_number])
+	if (!grid_generated) {
+		grid_generation()
+	}
 	if (placing_flag) {
-		if ((box_selected.style.backgroundImage=="")&&(box_selected.innerText=="")&&(amount_of_flags>0)) {
+		if ((box_selected.style.backgroundImage=="")&&(box_selected.innerText=="")&&(amount_of_flags>0)&&(box_selected.style.backgroundColor=="")) {
 			box_selected.style.backgroundImage = 'url("http://bit.ly/target_png")';
 			amount_of_flags--
 			document.getElementsByClassName('amount_of_flags')[0].innerText = "Amount of flags: " + amount_of_flags
+			if (temp_flag) {
+				placing_flag = false
+			}
 		} else if (box_selected.style.backgroundImage=='url("http://bit.ly/target_png")') { // careful with the " or '
 			box_selected.style.backgroundImage = "";
 			amount_of_flags++
 			document.getElementsByClassName('amount_of_flags')[0].innerText = "Amount of flags: " + amount_of_flags
 		}
+		temp_flag = false
 	} else {
 		if (grid_hidden[row_number][box_number]=="bomb") {
 			box_selected.style.backgroundImage = "url('http://bit.ly/bomb_png')"
@@ -167,12 +202,12 @@ function reveal_the_zeros(temp_row,temp_box) {
 	//console.log("calling function with arguments: ",temp_row,temp_box)
 	if (grid_hidden[temp_row-1]!=undefined) {
 		box_above = grid_html.getElementsByClassName("rows")[temp_row-1].getElementsByClassName("box")[temp_box]
-		if ((grid_hidden[temp_row-1][temp_box]==0)&&(box_above.style.backgroundColor!=revealed_zero_color)) {
-			reveal_box(temp_row-1,temp_box)
-			reveal_the_zeros(temp_row-1,temp_box)
+		if ((grid_hidden[temp_row-1][temp_box]==0)&&(box_above.style.backgroundColor!=revealed_zero_color)) { // if it's 0
+			reveal_box(temp_row-1,temp_box) // reveal box
+			reveal_the_zeros(temp_row-1,temp_box) // restart function on the revealed box
 		}
-		if ((box_above.style.backgroundColor!=revealed_zero_color)&&(box_above.innerText=="")) {
-			reveal_box(temp_row-1,temp_box)
+		if ((box_above.style.backgroundColor!=revealed_zero_color)&&(box_above.innerText=="")) { // if the box above is unrevealed but nearby is a 0
+			reveal_box(temp_row-1,temp_box) // then reveal the box
 		}
 	}
 	if (grid_hidden[temp_row+1]!=undefined) {
@@ -205,6 +240,58 @@ function reveal_the_zeros(temp_row,temp_box) {
 		}
 		if ((box_right.style.backgroundColor!=revealed_zero_color)&&(box_right.innerText=="")) {
 			reveal_box(temp_row,temp_box+1)
+		}
+	}
+	// doing the corners below
+	if (grid_hidden[temp_row+1]!=undefined) {
+		if (grid_hidden[temp_row+1][temp_box+1]!=undefined) {
+			box_bottom_right = grid_html.getElementsByClassName("rows")[temp_row+1].getElementsByClassName("box")[temp_box+1]
+			if ((grid_hidden[temp_row+1][temp_box+1]==0)&&(box_bottom_right.style.backgroundColor!=revealed_zero_color)) {
+				reveal_box(temp_row+1,temp_box+1)
+				reveal_the_zeros(temp_row+1,temp_box+1)
+			}
+			if ((box_bottom_right.style.backgroundColor!=revealed_zero_color)&&(box_bottom_right.innerText=="")) {
+				reveal_box(temp_row+1,temp_box+1)
+			}
+		}
+		
+	}
+	if (grid_hidden[temp_row+1]!=undefined) {
+		if (grid_hidden[temp_row+1][temp_box-1]!=undefined) {
+			box_bottom_left = grid_html.getElementsByClassName("rows")[temp_row+1].getElementsByClassName("box")[temp_box-1]
+			if ((grid_hidden[temp_row+1][temp_box-1]==0)&&(box_bottom_left.style.backgroundColor!=revealed_zero_color)) {
+				reveal_box(temp_row+1,temp_box-1)
+				reveal_the_zeros(temp_row+1,temp_box-1)
+			}
+			if ((box_bottom_left.style.backgroundColor!=revealed_zero_color)&&(box_bottom_left.innerText=="")) {
+				reveal_box(temp_row+1,temp_box-1)
+			}
+		}
+		
+	}
+	if (grid_hidden[temp_row-1]!=undefined) {
+		if (grid_hidden[temp_row-1][temp_box+1]!=undefined) {
+			box_top_right = grid_html.getElementsByClassName("rows")[temp_row-1].getElementsByClassName("box")[temp_box+1]
+			if ((grid_hidden[temp_row-1][temp_box+1]==0)&&(box_top_right.style.backgroundColor!=revealed_zero_color)) {
+				reveal_box(temp_row-1,temp_box+1)
+				reveal_the_zeros(temp_row-1,temp_box+1)
+			}
+			if ((box_top_right.style.backgroundColor!=revealed_zero_color)&&(box_top_right.innerText=="")) {
+				reveal_box(temp_row-1,temp_box+1)
+			}
+		}
+		
+	}
+	if (grid_hidden[temp_row-1]!=undefined) {
+		if (grid_hidden[temp_row-1][temp_box-1]!=undefined) {
+			box_top_left = grid_html.getElementsByClassName("rows")[temp_row-1].getElementsByClassName("box")[temp_box-1]
+			if ((grid_hidden[temp_row-1][temp_box-1]==0)&&(box_top_left.style.backgroundColor!=revealed_zero_color)) {
+				reveal_box(temp_row-1,temp_box-1)
+				reveal_the_zeros(temp_row-1,temp_box-1)
+			}
+			if ((box_top_left.style.backgroundColor!=revealed_zero_color)&&(box_top_left.innerText=="")) {
+				reveal_box(temp_row-1,temp_box-1)
+			}
 		}
 	}
 }
