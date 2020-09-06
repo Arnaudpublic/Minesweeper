@@ -5,10 +5,12 @@ let row_number,box_number; // column first then row
 let number_of_rows = 20,number_of_boxes = 30;
 let game_over = false;
 let revealed_zero_color = "rgba(255, 255, 255, 0.5)" // careful to syntax here
+let seconds = 0, minutes = 0, timer_stop = false;
 
 function loading() {
 	size(20,30)
 	grid_reset()
+	updateTimer()
 }
 
 function size(new_value_one,new_value_two) {
@@ -28,7 +30,10 @@ function difficulty(multiplier,text_to_display) {
 }
 
 function grid_reset() {
+	seconds = 0
+	minutes = 0
 	game_over = false;
+	timer_stop = true;
 	grid_generated = false;
 	grid_html = document.getElementsByClassName("grid")[0]
 	for (var i = grid_html.getElementsByClassName("rows").length - 1; i >= 0; i--) {
@@ -58,6 +63,7 @@ function grid_reset() {
 
 function grid_generation(start_row,start_box) {
 	// bomb generation
+	timer_stop = false
 	grid_generated = true
 	amount_of_bombs = bomb_multipler*Math.floor(Math.sqrt(number_of_rows))*Math.floor(Math.sqrt(number_of_boxes));
 	amount_of_flags = amount_of_bombs;
@@ -113,7 +119,6 @@ function grid_generation(start_row,start_box) {
 			//grid_html.getElementsByClassName("rows")[row_number].getElementsByClassName("box")[box_number].innerText = grid_hidden[row_number][box_number] // that's for output not for normal games
 		}
 	}
-	updateTimer()
 }
 
 function flag_status() {
@@ -126,9 +131,11 @@ function flag_status() {
 	}
 }
 
-var seconds = 0, minutes = 0;
 function updateTimer() {
-    seconds ++
+	if (!timer_stop) {
+		seconds ++
+	}
+   
      setTimeout(updateTimer, 1000)
      if (seconds==60) {
      	seconds=0
@@ -142,6 +149,9 @@ function updateTimer() {
      } else {
     	document.getElementsByClassName('timer')[0].innerText = "Timer: " + minutes + ":" + seconds
     }
+     if ((seconds==0)&&(minutes==0)) {
+    	document.getElementsByClassName('timer')[0].innerText = "Game didn't start yet, click on a box to play."
+     }
 }
 
 function right_click(e) {
@@ -367,6 +377,7 @@ function end_game(win_or_loss) {
 		}
 	}
 	game_over = true
+	timer_stop = true
 	game_win = win_or_loss
 	alert('The game is over, you can start a new one by pressing on "start over"')
 }
